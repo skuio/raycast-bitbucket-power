@@ -40,6 +40,10 @@ interface TestCaseReason {
   stack_trace: string;
 }
 
+interface Error {
+  message: string;
+}
+
 const api = axios.create({
   baseURL: "https://api.bitbucket.org/2.0/repositories",
 });
@@ -152,7 +156,7 @@ const usePipelines = (workspace: string, repositorySlug: string, accessToken: st
           }),
         );
         setPipelines(pipelinesWithDescriptions);
-      } catch (error: unknown) {
+      } catch (error: Error) {
         setError(error.message);
         showToast(Toast.Style.Failure, "Error fetching pipelines", error.message);
       } finally {
@@ -187,7 +191,7 @@ const useTestCases = (
         setStepUuid(step.uuid);
         const testCases = await fetchTestCases(workspace, repositorySlug, pipelineUuid, step.uuid, accessToken);
         setTestCases(Object.values(testCases));
-      } catch (error: unknown) {
+      } catch (error: Error) {
         setError(error.message);
         showToast(Toast.Style.Failure, "Error fetching test results", error.message);
       } finally {
@@ -226,7 +230,7 @@ const useTestCaseReason = (
           accessToken,
         );
         setReason(reason);
-      } catch (error: unknown) {
+      } catch (error: Error) {
         setError(error.message);
         showToast(Toast.Style.Failure, "Error fetching test case reason", error.message);
       } finally {
