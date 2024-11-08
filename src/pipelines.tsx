@@ -156,7 +156,7 @@ const usePipelines = (workspace: string, repositorySlug: string, accessToken: st
           }),
         );
         setPipelines(pipelinesWithDescriptions);
-      } catch (error: Error) {
+      } catch (error) {
         setError(error.message);
         showToast(Toast.Style.Failure, "Error fetching pipelines", error.message);
       } finally {
@@ -191,7 +191,7 @@ const useTestCases = (
         setStepUuid(step.uuid);
         const testCases = await fetchTestCases(workspace, repositorySlug, pipelineUuid, step.uuid, accessToken);
         setTestCases(Object.values(testCases));
-      } catch (error: Error) {
+      } catch (error) {
         setError(error.message);
         showToast(Toast.Style.Failure, "Error fetching test results", error.message);
       } finally {
@@ -230,7 +230,7 @@ const useTestCaseReason = (
           accessToken,
         );
         setReason(reason);
-      } catch (error: Error) {
+      } catch (error) {
         setError(error.message);
         showToast(Toast.Style.Failure, "Error fetching test case reason", error.message);
       } finally {
