@@ -1,13 +1,4 @@
-import {
-  ActionPanel,
-  List,
-  Action,
-  Icon,
-  Color,
-  showToast,
-  Toast,
-  getPreferenceValues, Detail
-} from "@raycast/api";
+import { ActionPanel, List, Action, Icon, Color, showToast, Toast, getPreferenceValues, Detail } from "@raycast/api";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -60,33 +51,62 @@ const fetchPipelines = async (workspace: string, repositorySlug: string, accessT
   return response.data.values;
 };
 
-const fetchCommitMessage = async (workspace: string, repositorySlug: string, commitHash: string, accessToken: string) => {
+const fetchCommitMessage = async (
+  workspace: string,
+  repositorySlug: string,
+  commitHash: string,
+  accessToken: string,
+) => {
   const response = await api.get(`/${workspace}/${repositorySlug}/commit/${commitHash}`, {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
   return response.data.message;
 };
 
-const fetchPipelineSteps = async (workspace: string, repositorySlug: string, pipelineUuid: string, accessToken: string) => {
+const fetchPipelineSteps = async (
+  workspace: string,
+  repositorySlug: string,
+  pipelineUuid: string,
+  accessToken: string,
+) => {
   const response = await api.get(`/${workspace}/${repositorySlug}/pipelines/${pipelineUuid}/steps`, {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
   return response.data.values;
 };
 
-const fetchTestCases = async (workspace: string, repositorySlug: string, pipelineUuid: string, stepUuid: string, accessToken: string) => {
-  const response = await api.get(`/${workspace}/${repositorySlug}/pipelines/${pipelineUuid}/steps/${stepUuid}/test_reports/test_cases`, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  });
+const fetchTestCases = async (
+  workspace: string,
+  repositorySlug: string,
+  pipelineUuid: string,
+  stepUuid: string,
+  accessToken: string,
+) => {
+  const response = await api.get(
+    `/${workspace}/${repositorySlug}/pipelines/${pipelineUuid}/steps/${stepUuid}/test_reports/test_cases`,
+    {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    },
+  );
   return response.data.values;
 };
 
-const fetchTestCaseReason = async (workspace: string, repositorySlug: string, pipelineUuid: string, stepUuid: string, testCaseUuid: string, accessToken: string) => {
-  const response = await api.get(`/${workspace}/${repositorySlug}/pipelines/${pipelineUuid}/steps/${stepUuid}/test_reports/test_cases/${testCaseUuid}/test_case_reasons`, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  });
+const fetchTestCaseReason = async (
+  workspace: string,
+  repositorySlug: string,
+  pipelineUuid: string,
+  stepUuid: string,
+  testCaseUuid: string,
+  accessToken: string,
+) => {
+  const response = await api.get(
+    `/${workspace}/${repositorySlug}/pipelines/${pipelineUuid}/steps/${stepUuid}/test_reports/test_cases/${testCaseUuid}/test_case_reasons`,
+    {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    },
+  );
   return response.data;
-}
+};
 
 const getStatusIcon = (pipeline: Pipeline) => {
   switch (pipeline.state.name) {
@@ -104,7 +124,7 @@ const getStatusIcon = (pipeline: Pipeline) => {
     default:
       return { source: Icon.CircleProgress };
   }
-}
+};
 
 const usePipelines = (workspace: string, repositorySlug: string, accessToken: string) => {
   const [pipelines, setPipelines] = useState<Pipeline[]>([]);
@@ -119,12 +139,17 @@ const usePipelines = (workspace: string, repositorySlug: string, accessToken: st
         const pipelinesWithDescriptions = await Promise.all(
           pipelines.map(async (pipeline: Pipeline) => {
             try {
-              const description = await fetchCommitMessage(workspace, repositorySlug, pipeline.target.commit.hash, accessToken);
+              const description = await fetchCommitMessage(
+                workspace,
+                repositorySlug,
+                pipeline.target.commit.hash,
+                accessToken,
+              );
               return { ...pipeline, description };
             } catch {
               return { ...pipeline, description: "Error fetching commit details" };
             }
-          })
+          }),
         );
         setPipelines(pipelinesWithDescriptions);
       } catch (error: object) {
@@ -141,7 +166,13 @@ const usePipelines = (workspace: string, repositorySlug: string, accessToken: st
   return { pipelines, loading, error };
 };
 
-const useTestCases = (workspace: string, repositorySlug: string, pipelineUuid: string, accessToken: string, testStepNumber: number) => {
+const useTestCases = (
+  workspace: string,
+  repositorySlug: string,
+  pipelineUuid: string,
+  accessToken: string,
+  testStepNumber: number,
+) => {
   const [testCases, setTestCases] = useState<TestCase[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -170,7 +201,14 @@ const useTestCases = (workspace: string, repositorySlug: string, pipelineUuid: s
   return { testCases, loading, error, stepUuid };
 };
 
-const useTestCaseReason = (workspace: string, repositorySlug: string, pipelineUuid: string, stepUuid: string, testCaseUuid: string, accessToken: string) => {
+const useTestCaseReason = (
+  workspace: string,
+  repositorySlug: string,
+  pipelineUuid: string,
+  stepUuid: string,
+  testCaseUuid: string,
+  accessToken: string,
+) => {
   const [reason, setReason] = useState<TestCaseReason | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -179,7 +217,14 @@ const useTestCaseReason = (workspace: string, repositorySlug: string, pipelineUu
     const getTestCaseReason = async () => {
       setLoading(true);
       try {
-        const reason = await fetchTestCaseReason(workspace, repositorySlug, pipelineUuid, stepUuid, testCaseUuid, accessToken);
+        const reason = await fetchTestCaseReason(
+          workspace,
+          repositorySlug,
+          pipelineUuid,
+          stepUuid,
+          testCaseUuid,
+          accessToken,
+        );
         setReason(reason);
       } catch (error: object) {
         setError(error.message);
@@ -193,14 +238,33 @@ const useTestCaseReason = (workspace: string, repositorySlug: string, pipelineUu
   }, [workspace, repositorySlug, pipelineUuid, stepUuid, testCaseUuid, accessToken]);
 
   return { reason, loading, error };
-}
+};
 
-const TestCaseReason = ({ pipelineUuid, stepUuid, testCaseUuid }: { pipelineUuid: string, stepUuid: string, testCaseUuid: string }) => {
+const TestCaseReason = ({
+  pipelineUuid,
+  stepUuid,
+  testCaseUuid,
+}: {
+  pipelineUuid: string;
+  stepUuid: string;
+  testCaseUuid: string;
+}) => {
   const preferences = getPreferenceValues<Preferences>();
-  const { reason, loading, error } = useTestCaseReason(preferences.workspace, preferences.repositorySlug, pipelineUuid, stepUuid, testCaseUuid, preferences.accessToken);
+  const { reason, loading, error } = useTestCaseReason(
+    preferences.workspace,
+    preferences.repositorySlug,
+    pipelineUuid,
+    stepUuid,
+    testCaseUuid,
+    preferences.accessToken,
+  );
 
   if (loading) {
-    return <List><List.Item title="Loading..." icon={Icon.Clock} /></List>;
+    return (
+      <List>
+        <List.Item title="Loading..." icon={Icon.Clock} />
+      </List>
+    );
   }
 
   if (error) {
@@ -224,15 +288,24 @@ const TestCaseReason = ({ pipelineUuid, stepUuid, testCaseUuid }: { pipelineUuid
       }
     />
   );
-
-}
+};
 
 const TestCases = ({ pipelineUuid }: { pipelineUuid: string }) => {
   const preferences = getPreferenceValues<Preferences>();
-  const { testCases, loading, error, stepUuid } = useTestCases(preferences.workspace, preferences.repositorySlug, pipelineUuid, preferences.accessToken, preferences.testStepNumber);
+  const { testCases, loading, error, stepUuid } = useTestCases(
+    preferences.workspace,
+    preferences.repositorySlug,
+    pipelineUuid,
+    preferences.accessToken,
+    preferences.testStepNumber,
+  );
 
   if (loading) {
-    return <List><List.Item title="Loading..." icon={Icon.Clock} /></List>;
+    return (
+      <List>
+        <List.Item title="Loading..." icon={Icon.Clock} />
+      </List>
+    );
   }
 
   if (error) {
@@ -255,7 +328,11 @@ const TestCases = ({ pipelineUuid }: { pipelineUuid: string }) => {
           icon={{ source: Icon.Xmark, tintColor: Color.Red }}
           actions={
             <ActionPanel>
-              <Action.Push title="Test Case Reason" icon={Icon.Info} target={<TestCaseReason pipelineUuid={pipelineUuid} stepUuid={stepUuid} testCaseUuid={testCase.uuid} />} />
+              <Action.Push
+                title="Test Case Reason"
+                icon={Icon.Info}
+                target={<TestCaseReason pipelineUuid={pipelineUuid} stepUuid={stepUuid} testCaseUuid={testCase.uuid} />}
+              />
             </ActionPanel>
           }
         />
@@ -266,7 +343,11 @@ const TestCases = ({ pipelineUuid }: { pipelineUuid: string }) => {
 
 export default function Command() {
   const preferences = getPreferenceValues<Preferences>();
-  const { pipelines, loading, error } = usePipelines(preferences.workspace, preferences.repositorySlug, preferences.accessToken);
+  const { pipelines, loading, error } = usePipelines(
+    preferences.workspace,
+    preferences.repositorySlug,
+    preferences.accessToken,
+  );
 
   if (loading) {
     return (
@@ -284,7 +365,11 @@ export default function Command() {
   if (pipelines.length === 0 && !loading) {
     return (
       <List>
-        <List.Item title="No Pipelines Found" subtitle="No pipelines found for the provided details." icon={Icon.Xmark} />
+        <List.Item
+          title="No Pipelines Found"
+          subtitle="No pipelines found for the provided details."
+          icon={Icon.Xmark}
+        />
       </List>
     );
   }
@@ -300,12 +385,25 @@ export default function Command() {
           accessories={[{ text: `${pipeline.creator.display_name}` }]}
           actions={
             <ActionPanel>
-              <Action.OpenInBrowser title="Open Pipeline" url={`https://bitbucket.org/siberventures/sku.io/pipelines/results/${pipeline.build_number}`} />
+              <Action.OpenInBrowser
+                title="Open Pipeline"
+                url={`https://bitbucket.org/siberventures/sku.io/pipelines/results/${pipeline.build_number}`}
+              />
               {pipeline.state.name === "IN_PROGRESS" && (
-                <Action title="Stop Pipeline" icon={Icon.Stop} style={Action.Style.Destructive} onAction={() => showToast(Toast.Style.Failure, "Not implemented yet")} />
+                <Action
+                  title="Stop Pipeline"
+                  icon={Icon.Stop}
+                  style={Action.Style.Destructive}
+                  onAction={() => showToast(Toast.Style.Failure, "Not implemented yet")}
+                />
               )}
               {pipeline.state.name === "COMPLETED" && (
-                <Action.Push title="Test Results" icon={Icon.Document} shortcut={{ modifiers: ["cmd"], key: "t" }} target={<TestCases pipelineUuid={pipeline.uuid} />} />
+                <Action.Push
+                  title="Test Results"
+                  icon={Icon.Document}
+                  shortcut={{ modifiers: ["cmd"], key: "t" }}
+                  target={<TestCases pipelineUuid={pipeline.uuid} />}
+                />
               )}
             </ActionPanel>
           }
