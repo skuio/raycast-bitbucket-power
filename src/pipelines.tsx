@@ -45,6 +45,10 @@ interface TestCase {
   status: string;
 }
 
+interface TestCaseReason {
+  stack_trace: string;
+}
+
 const api = axios.create({
   baseURL: "https://api.bitbucket.org/2.0/repositories",
 });
@@ -113,7 +117,7 @@ const usePipelines = (workspace: string, repositorySlug: string, accessToken: st
       try {
         const pipelines = await fetchPipelines(workspace, repositorySlug, accessToken);
         const pipelinesWithDescriptions = await Promise.all(
-          pipelines.map(async (pipeline) => {
+          pipelines.map(async (pipeline: Pipeline) => {
             try {
               const description = await fetchCommitMessage(workspace, repositorySlug, pipeline.target.commit.hash, accessToken);
               return { ...pipeline, description };
