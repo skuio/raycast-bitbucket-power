@@ -6,6 +6,7 @@
   "icon": "icon.png",
   "author": "kmizzi",
   "owner": "sku-io",
+  "access": "public",
   "categories": [
     "Developer Tools"
   ],
