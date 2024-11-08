@@ -1,3 +1,3 @@
-# Bitbucket Pipelines
+# Bitbucket Power
 
-Lists the pipelines
+Raycast app with advanced features to manage Bitbucket.
