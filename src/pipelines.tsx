@@ -127,7 +127,7 @@ const usePipelines = (workspace: string, repositorySlug: string, accessToken: st
           })
         );
         setPipelines(pipelinesWithDescriptions);
-      } catch (error: any) {
+      } catch (error: object) {
         setError(error.message);
         showToast(Toast.Style.Failure, "Error fetching pipelines", error.message);
       } finally {
@@ -145,7 +145,7 @@ const useTestCases = (workspace: string, repositorySlug: string, pipelineUuid: s
   const [testCases, setTestCases] = useState<TestCase[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [stepUuid, setStepUuid] = useState<any | null>(null);
+  const [stepUuid, setStepUuid] = useState<string | null>(null);
 
   useEffect(() => {
     const getTestCases = async () => {
@@ -156,7 +156,7 @@ const useTestCases = (workspace: string, repositorySlug: string, pipelineUuid: s
         setStepUuid(step.uuid);
         const testCases = await fetchTestCases(workspace, repositorySlug, pipelineUuid, step.uuid, accessToken);
         setTestCases(Object.values(testCases));
-      } catch (error: any) {
+      } catch (error: object) {
         setError(error.message);
         showToast(Toast.Style.Failure, "Error fetching test results", error.message);
       } finally {
@@ -181,7 +181,7 @@ const useTestCaseReason = (workspace: string, repositorySlug: string, pipelineUu
       try {
         const reason = await fetchTestCaseReason(workspace, repositorySlug, pipelineUuid, stepUuid, testCaseUuid, accessToken);
         setReason(reason);
-      } catch (error: any) {
+      } catch (error: object) {
         setError(error.message);
         showToast(Toast.Style.Failure, "Error fetching test case reason", error.message);
       } finally {
@@ -216,7 +216,7 @@ const TestCaseReason = ({ pipelineUuid, stepUuid, testCaseUuid }: { pipelineUuid
   return (
     <Detail
       // replace \n in string with actual new lines
-      markdown={reason.stack_trace.replace(/\\n/g, "\n")}
+      markdown={reason?.stack_trace.replace(/\\n/g, "\n")}
       actions={
         <ActionPanel>
           <Action.CopyToClipboard title="Copy Stack Trace" content={reason.stack_trace} />
