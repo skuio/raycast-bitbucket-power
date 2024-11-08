@@ -152,7 +152,7 @@ const usePipelines = (workspace: string, repositorySlug: string, accessToken: st
           }),
         );
         setPipelines(pipelinesWithDescriptions);
-      } catch (error: object) {
+      } catch (error: unknown) {
         setError(error.message);
         showToast(Toast.Style.Failure, "Error fetching pipelines", error.message);
       } finally {
@@ -187,7 +187,7 @@ const useTestCases = (
         setStepUuid(step.uuid);
         const testCases = await fetchTestCases(workspace, repositorySlug, pipelineUuid, step.uuid, accessToken);
         setTestCases(Object.values(testCases));
-      } catch (error: object) {
+      } catch (error: unknown) {
         setError(error.message);
         showToast(Toast.Style.Failure, "Error fetching test results", error.message);
       } finally {
@@ -226,7 +226,7 @@ const useTestCaseReason = (
           accessToken,
         );
         setReason(reason);
-      } catch (error: object) {
+      } catch (error: unknown) {
         setError(error.message);
         showToast(Toast.Style.Failure, "Error fetching test case reason", error.message);
       } finally {
@@ -283,7 +283,7 @@ const TestCaseReason = ({
       markdown={reason?.stack_trace.replace(/\\n/g, "\n")}
       actions={
         <ActionPanel>
-          <Action.CopyToClipboard title="Copy Stack Trace" content={reason.stack_trace} />
+          <Action.CopyToClipboard title="Copy Stack Trace" content={reason?.stack_trace ?? ''} />
         </ActionPanel>
       }
     />
@@ -331,7 +331,7 @@ const TestCases = ({ pipelineUuid }: { pipelineUuid: string }) => {
               <Action.Push
                 title="Test Case Reason"
                 icon={Icon.Info}
-                target={<TestCaseReason pipelineUuid={pipelineUuid} stepUuid={stepUuid} testCaseUuid={testCase.uuid} />}
+                target={<TestCaseReason pipelineUuid={pipelineUuid} stepUuid={stepUuid ?? ''} testCaseUuid={testCase.uuid} />}
               />
             </ActionPanel>
           }
