@@ -1,6 +1,6 @@
 {
   "$schema": "https://www.raycast.com/schemas/extension.json",
-  "name": "bitbucket",
+  "name": "bitbucket-power",
   "title": "Bitbucket",
   "description": "Lists the pipelines",
   "icon": "icon.png",
