@@ -171,7 +171,7 @@ const useTestCases = (workspace: string, repositorySlug: string, pipelineUuid: s
 };
 
 const useTestCaseReason = (workspace: string, repositorySlug: string, pipelineUuid: string, stepUuid: string, testCaseUuid: string, accessToken: string) => {
-  const [reason, setReason] = useState<string>("");
+  const [reason, setReason] = useState<TestCaseReason>("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
